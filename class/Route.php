@@ -35,29 +35,9 @@ class formController extends UserAuth
                 break;
             case isset($_POST['login']):
                 //unpack all data for login
-                $this->email = $_POST['email'];
+                $this->username = $_POST['username'];
                 $this->password = $_POST['password'];
-                $this->login($this->email, $this->password);
-                break;
-            case isset($_POST['logout']):
-                //unpack all data for logout
-                $this->email = $_SESSION['email'];
-                $this->logout($this->email);
-                break;
-            case isset($_POST['delete']):
-                //unpack all data for deleting
-                $this->id = $_POST['id'];
-                $this->deleteUser($this->id);
-                break;
-            case isset($_POST['reset']):
-                //unpack all data for updating password
-                $this->email = $_POST['email'];
-                $this->password = $_POST['password'];
-                $this->updateUser($this->email, $this->password);
-                break;
-            case isset($_POST['all']):
-                //unpack all data for getting all users
-                $this->getAllUsers();
+                $this->login($this->username, $this->password);
                 break;
             default:
                 echo 'No form was submitted';
