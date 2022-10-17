@@ -43,5 +43,14 @@ class Session{
       header('Location:index.php');
     }
   }
+
+  // Check Edit User Permission Method
+  public static function PermissionToEdit(){
+    if (Session::get('super_user') != 1) {
+      if(Session::get('id')!=$_GET['id']){
+        header("Location: index.php");
+      }
+  }
+  }
 }
 ?>

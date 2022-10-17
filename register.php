@@ -2,32 +2,37 @@
 $title = "Register";
 include 'base/head.php';
 
-if (Session::get('logged') == TRUE){
-    header("Location: index.php");
-}
-?>
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['register'])) {
 
+  $register = $users->userRegistration($_POST);
+}
+
+if (isset($register)) {
+   ?> 
+    <center>
+    <div class="alert alert-dismissible alert-info col-4">
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        <strong><?php echo $register?></strong>
+    </div></center>
+
+<?php
+}
+// Unset Session msg pop-ups
+Session::set("msg", NULL);
+Session::set("logMsg", NULL);
+
+ ?>
 <div class="container-fluid">
     <div class="row justify-content-center mt-4">        
         <div class="col-4">
-        <?php 
-            if(!empty($_GET['msg'])){?>
-                <div class="alert alert-dismissible alert-primary">
-                    <button type="button" class="btn-close" data-dismiss="alert" onclick="location.href='register.php'"></button>
-                    <strong><?php echo Session::get('msg')?></strong>
-                </div>
-
-            <?php
-            }
-        ?>
         <div class="card border-dark m-3" style="max-width: 30rem;">
             <div class="card-header d-flex justify-content-center">Create User</div>
             <div class="card-body">
-            <form name="userform" action="action.php" method="POST">
+            <form method="POST">
                 <strong>User Account</strong>
                 <div class="form-group">
                     <div class="form-floating mb-3">
-                        <input type="text" class="form-control" placeholder="Username" name="username" >
+                        <input type="text" class="form-control" placeholder="Username" name="username"">
                         <label for="username">Username</label>
                     </div>
                     <div class="form-floating mb-3">
@@ -48,15 +53,15 @@ if (Session::get('logged') == TRUE){
                 <strong>User Profile</strong>
                 <div class="form-group">
                     <div class="form-floating mb-3">
-                        <input type="text" class="form-control" placeholder="First Name" name="fname" >
+                        <input type="text" class="form-control" placeholder="First Name" name="firstname" >
                         <label for="first-name">First Name</label>
                     </div>
                     <div class="form-floating mb-3">
-                        <input type="text" class="form-control" placeholder="Last Name" name="lname" >
+                        <input type="text" class="form-control" placeholder="Last Name" name="lastname" >
                         <label for="last-name">Last Name</label>
                     </div>
                     <div class="form-floating mb-3">
-                        <input type="text" class="form-control" placeholder="Middle Name" name="mname" >
+                        <input type="text" class="form-control" placeholder="Middle Name" name="middlename" >
                         <label for="middle-name">Middle Name</label>
                     </div>
                     <div class="form-floating mb-3">
@@ -76,22 +81,26 @@ if (Session::get('logged') == TRUE){
                         <label for="company">Position</label>
                     </div>
                     <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" name="radio" value="active" checked>
+                        <input class="form-check-input" type="radio" name="isActive" value="active" checked>
                         <label class="form-check-label" for="inlineRadio1">Activate</label>
                         </div>
                     <div class="form-check form-check-inline mb-4">
-                        <input class="form-check-input" type="radio" name="radio" value="inactive">
+                        <input class="form-check-input" type="radio" name="isActive" value="inactive">
                         <label class="form-check-label" for="inlineRadio2">Deactivate</label>
                     </div>
                 </div>
                 <button type="submit" class="btn btn-primary" name="register">Submit</button>
                 <button type="reset" class="btn btn-warning">Reset</button>
             </form>
+            <?php if (Session::get('logged')==false) {
+            ?>
             <div class="card-footer text-center">
                 <div class="small">
                     Have an account already? <a href="login.php"> Login </a><br>
                 </div>
             </div>
+            <?php 
+            }?>
             </div>
             
         </div>

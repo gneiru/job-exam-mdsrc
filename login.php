@@ -2,11 +2,29 @@
 $title = "Login";
 include 'base/head.php';
 
+$logMsg = Session::get('logMsg');
+if (isset($logMsg)) {
+  echo $logMsg;
+}
+$msg = Session::get('msg');
+if (isset($msg)) {
+  echo $msg;
+}
+Session::set("msg", NULL);
+Session::set("logMsg", NULL);
+
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['login'])) {
-   $userLog = $users->login($_POST);
+   $userLog = $users->userLoginAuthotication($_POST);
 }
 if (isset($userLog)) {
-  echo $userLog;
+    ?> 
+    <center>
+    <div class="alert alert-dismissible alert-info col-4">
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        <strong><?php echo $userLog?></strong>
+    </div></center>
+
+<?php
 }
 
 $logout = Session::get('logout');
@@ -27,13 +45,13 @@ if (isset($logout)) {
                                 <div class="form-row">
                                     <div class="form-group">
                                         <label for="username" class="form-label mt-2">Username</label>
-                                        <input type="text" class="form-control" placeholder="Username" name="username" required>
+                                        <input type="text" class="form-control" placeholder="Username" name="username">
                                     </div>
                                 </div>
                                 <div class="form-row">
                                     <div class="form-group">
                                         <label for="username" class="form-label mt-2">Password</label>
-                                        <input type="password" class="form-control" placeholder="Password" name="password" required>
+                                        <input type="password" class="form-control" placeholder="Password" name="password">
                                     </div>
                                 </div>
                                 <div class="form-row">
