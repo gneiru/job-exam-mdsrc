@@ -2,27 +2,12 @@
 $title = "Users";
 include 'base/head.php';
 
-
+// Check Session, Login if not Logged 
 Session::CheckSession();
-// Session Log Messages
-$logMsg = Session::get('logMsg');
-if (isset($logMsg) ) {
-    echo $logMsg;
-}
-
-// Get page index from url, if nothing found, set it to 1
-if(isset($_GET['page']))
-{
-    $page = $_GET['page'];
-}
-else
-{
-    $page = 1;
-}
 
 // Session Error Message
 $msg = Session::get('msg');
-if (isset($msg) && !empty($msg)) {
+if ($msg !== false) {
     ?> 
     <center>
     <div class="alert alert-dismissible alert-info col-4">
@@ -32,9 +17,16 @@ if (isset($msg) && !empty($msg)) {
 
 <?php
 }
-// unset Session after Display
+// Unset ErrorMsg Session after Display
 Session::set("msg", NULL);
-Session::set("logMsg", NULL);
+
+// Get page index from url, if nothing found, set it to 1
+if(isset($_GET['page'])){
+    $page = $_GET['page'];
+}else{
+    $page = 1;
+}
+
 ?>
 <?php
 
@@ -42,30 +34,18 @@ Session::set("logMsg", NULL);
 if (isset($_GET['remove'])) {
     $remove = preg_replace('/[^a-zA-Z0-9-]/', '', (int)$_GET['remove']);
     $removeUser = $users->deleteUserById($remove);
-    header("Location: index.php");
-  
+    header("Location: index.php"); 
 }
-if (isset($removeUser)) {
-    echo $removeUser;
-}
-// Call Deactivate User Method
-if (isset($_GET['deactive'])) {
-    $deactive = preg_replace('/[^a-zA-Z0-9-]/', '', (int)$_GET['deactive']);
-    $deactiveId = $users->userDeactiveByAdmin($deactive);
-}
-if (isset($deactiveId)) {
-     echo $deactiveId;
-}
-
-// Call Activate User Method
-if (isset($_GET['active'])) {
-    $active = preg_replace('/[^a-zA-Z0-9-]/', '', (int)$_GET['active']);
-    $activeId = $users->userActiveByAdmin($active);
-}
-if (isset($activeId)) {
-    echo $activeId;
-}
-?>
+// Call Deactivate / Activate User Method
+    if (isset($_GET['deactive'])) {
+        $deactive = preg_replace('/[^a-zA-Z0-9-]/', '', (int)$_GET['deactive']);
+        $deactiveId = $users->userDeactiveByAdmin($deactive);
+    }
+    elseif (isset($_GET['active'])) {
+        $active = preg_replace('/[^a-zA-Z0-9-]/', '', (int)$_GET['active']);
+        $activeId = $users->userActiveByAdmin($active);
+    }
+    ?>
 <!-- Content -->
 <div class="container mt-5">
     <div class="row justify-content-center">
@@ -80,10 +60,15 @@ if (isset($activeId)) {
                 <div class="card-body pr-2 pl-2 " id="pagination_data">
                         <?php
                         // Call the viewUsers() method to display data from the database
-                        $allUser = $users->selectAllUserData($page);
-
-                        // Call the totalPage() method to find total page on pagination
-                        $totalPage = $users->totalPage();
+                        if(isset($_GET['page']) == True){
+                            // paginated
+                            $allUser = $users->selectUsersByPage($page);
+                            // Call the totalPage() method to find total page on pagination
+                            $totalPage = $users->totalPage();
+                        }else{
+                            // non- paginated
+                            $allUser = $users->selectAllUserData();
+                        }
                         if ($allUser) {
                             $i = 0;
                             ?><table id="myTable" class="table-responsive table-striped table-bordered" style="width:100%">
@@ -217,29 +202,40 @@ if (isset($activeId)) {
                     </table>
                     <!-- Pagination -->
                     <nav aria-label="Page navigation">
-                        <ul class="pagination">
-                            <!-- $page is the page number of pagination. if it is 1 or less, disable the Previous button  -->
-                            <li class="page-item <?php if($page <= 1){ echo 'disabled'; } ?>">
-                                <a class="page-link" href="index.php?page=<?=$page-1?>">Previous</a>
-                            </li>
-                            <?php
-                                for($i = 1; $i <= $totalPage; $i++)
-                                {
-                                    ?>
-                                    <!-- Add active effect if page number on URL is equal to current page link  -->
-                                    <li class="page-item <?php if($i == $page){echo 'active';}?>"> 
-                                        <a class="page-link" href="index.php?page=<?=$i?>"><?=$i?></a>
-                                    </li>
-                                    <?php
-                                }
-                            ?>
-                        
-                            <!-- $page is the page number of pagination. if it is Equal to last page, disable the Next button  -->
-                            <li class="page-item <?php if($page >= $totalPage){ echo 'disabled'; } ?>"> 
-                                <a class="page-link" href="index.php?page=<?=$page+1?>">Next</a>
-                            </li>
-                        </ul>
+                        <?php
+                        if(isset($_GET['page'])){?>
+                            <ul class="pagination mt-4">
+                                <!-- $page is the page number of pagination. if it is 1 or less, disable the Previous button  -->
+                                <li class="page-item <?php if($page <= 1){ echo 'disabled'; } ?>">
+                                    <a class="page-link" href="index.php?page=<?=$page-1?>">Previous</a>
+                                </li>
+                                <?php
+                                    for($i = 1; $i <= $totalPage; $i++)
+                                    {
+                                        ?>
+                                        <!-- Add active effect if page number on URL is equal to current page link  -->
+                                        <li class="page-item <?php if($i == $page){echo 'active';}?>"> 
+                                            <a class="page-link" href="index.php?page=<?=$i?>"><?=$i?></a>
+                                        </li>
+                                        <?php
+                                    }
+                                ?>
+                            
+                                <!-- $page is the page number of pagination. if it is Equal to last page, disable the Next button  -->
+                                <li class="page-item <?php if($page >= $totalPage){ echo 'disabled'; } ?>"> 
+                                    <a class="page-link" href="index.php?page=<?=$page+1?>">Next</a>
+                                </li>
+                                <!-- Disable Pagination Button -->
+                                <li class="page-item"> 
+                                    <a class="btn btn-outline-dark" href="index.php">Disable Pagination</a>
+                                </li>
+                            </ul>
+                        <?php }else{?>
+                           <a class="btn btn-outline-dark mt-4" href="index.php?page=1">Enable Pagination</a>
+                        <?php
+                        }?>
                     </nav>
+                    
 
                 </div>
             </div>

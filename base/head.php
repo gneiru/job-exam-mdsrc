@@ -23,8 +23,12 @@ if (isset($_GET['action']) && $_GET['action'] == 'logout') {
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
     <link rel="stylesheet" href="./css/style.css">
     <script src="https://cdn.datatables.net/1.12.1/css/jquery.dataTables.min.css"></script>
+    <link rel="icon" type="image/x-icon" href="./images/favicon.ico">
     <title> <?php echo $title;?> </title>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+
+  <!-- NAVBAR MENU -->
+  
+  <nav class="navbar navbar-expand-lg navbar-light bg-light">
   <div class="container-fluid">
     <a class="navbar-brand" href="#">Test APP</a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor03" aria-controls="navbarColor03" aria-expanded="false" aria-label="Toggle navigation">

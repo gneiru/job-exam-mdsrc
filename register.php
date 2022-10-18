@@ -7,21 +7,22 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['register'])) {
   $register = $users->userRegistration($_POST);
 }
 
-if (isset($register)) {
-   ?> 
+// Session Error Message
+$msg = Session::get('msg');
+if ($msg !== false) {
+    ?> 
     <center>
     <div class="alert alert-dismissible alert-info col-4">
         <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        <strong><?php echo $register?></strong>
+        <strong><?php echo $msg?></strong>
     </div></center>
 
 <?php
 }
 // Unset Session msg pop-ups
 Session::set("msg", NULL);
-Session::set("logMsg", NULL);
 
- ?>
+?>
 <div class="container-fluid">
     <div class="row justify-content-center mt-4">        
         <div class="col-4">

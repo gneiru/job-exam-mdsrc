@@ -2,35 +2,26 @@
 $title = "Login";
 include 'base/head.php';
 
-$logMsg = Session::get('logMsg');
-if (isset($logMsg)) {
-  echo $logMsg;
-}
-$msg = Session::get('msg');
-if (isset($msg)) {
-  echo $msg;
-}
-Session::set("msg", NULL);
-Session::set("logMsg", NULL);
+Session::CheckLogin();
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['login'])) {
-   $userLog = $users->userLoginAuthotication($_POST);
-}
-if (isset($userLog)) {
+    $userLog = $users->userLoginAuthotication($_POST);
+ }
+
+// Session Error Message
+$msg = Session::get('msg');
+if ($msg !== false) {
     ?> 
     <center>
     <div class="alert alert-dismissible alert-info col-4">
         <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        <strong><?php echo $userLog?></strong>
+        <strong><?php echo $msg?></strong>
     </div></center>
 
 <?php
 }
+Session::set("msg", NULL);
 
-$logout = Session::get('logout');
-if (isset($logout)) {
-  echo $logout;
-}
 ?>
 
 <div class="form-content my-3 p-3">
