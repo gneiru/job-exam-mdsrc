@@ -6,9 +6,6 @@ include './class/Users.php';
 $users = new Users();
 
 if (isset($_GET['action']) && $_GET['action'] == 'logout') {
-  // Session::set('logout', '<div class="alert alert-success alert-dismissible mt-3" id="flash-msg">
-  // <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-  // <strong>Success !</strong> You are Logged Out Successfully !</div>');
   Session::destroy();
 }
 
@@ -41,25 +38,22 @@ if (isset($_GET['action']) && $_GET['action'] == 'logout') {
         </li>
       </ul>
       <?php
+      // Show Add User, Welcome Text, Logout IF LOGGED IN
       if(Session::get('logged') == TRUE){?>
       <ul class="navbar-nav ms-md-auto">
-            <li class="nav-item">
-            <a class="nav-link" href="register.php">Add User</a>
-            </li>
-            <li class="nav-item">
-            <a class="nav-link active">Welcome <strong> <?php echo Session::get('username')?></strong></a>
-            </li>
-            <li>
-            <?php 
-            if(Session::get('logged') == TRUE){?>
-            <li class="nav-item">
-                <a name="logout" class="nav-link" href="?action=logout">Log out</a>
-            </li>
-            <?php
-            }?>
-            </li>
+        <li class="nav-item">
+          <a class="nav-link" href="register.php">Add User</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link active">Welcome <strong> <?php echo Session::get('username')?></strong></a>
+        </li>
+        <li>
+        <li class="nav-item">
+          <a name="logout" class="nav-link" href="?action=logout">Log out</a>
+        </li>
       </ul>
-      <?php }?>
+      <?php
+      }?>
     </div>
   </div>
 </nav>

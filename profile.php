@@ -6,9 +6,17 @@ Session::CheckSession();
  ?>
 
 <?php
-// Redirect to index page if not Super User nor the User itself
 
+// Check if user can edit the user profile
 if (isset($_GET['id'])) {
+    if (Session::get('id') == $_GET['id']) {
+        // PASS if matches ID of user session
+    }elseif(Session::get('super_user') == 1){
+        // PASS if super_user
+    }else{
+        Session::set('msg', 'You have no access to that profile!');
+        header("Location: index.php");
+    }
     $userid = preg_replace('/[^a-zA-Z0-9-]/', '', (int)$_GET['id']);
 
 }
@@ -83,5 +91,9 @@ if ($getUinfo) {
             </form>
     
 <?php
+}else{
+    // isset ID doesn't exist
+    Session::set('msg', "No such user found!");
+    header("Location: index.php");
 }
 include 'base/foot.php';

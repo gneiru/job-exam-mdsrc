@@ -92,6 +92,8 @@ class Users{
     $checkUsername = $this->UsernameExist($username);
     $checkChar = $this->isNotChar(array($firstname,$lastname,$middlename,$company,$position));
     $checkAddress = $this->invalidAddress($address);
+
+    // VALIDATIONS ; returns True if invalid
     if ($checkEmail == TRUE) {
       $this->msg = $this->msg . "Email Already Exists!<br>";
       $CantRegister = true;
@@ -114,7 +116,9 @@ class Users{
       $this->msg = $this->msg . "Enter only Number Characters for Mobile number field! <br>";
       $CantRegister = true;
     }
+    
     if ($CantRegister== false) {
+      // Nothing met the if-else stamements before this statement
       $sql = "INSERT INTO user(username, emailaddress, password, firstname, middlename, lastname, address, company, contactnumber, position, active) VALUES(:username, :emailaddress, :password, :firstname, :middlename, :lastname, :address, :company, :contactnumber, :position, :active)";
       $stmt = $this->db->pdo->prepare($sql);
       $stmt->bindValue(':username', $username);
@@ -156,7 +160,12 @@ class Users{
     $stmt->bindValue(':username', $username);
     $stmt->bindValue(':password', $passw);
     $stmt->execute();
-    return $stmt->fetch(PDO::FETCH_OBJ);
+    if ($stmt->rowCount() == 1) {
+      return $stmt->fetch(PDO::FETCH_OBJ);
+    }else{
+      return false;
+    }
+    
   }
   // Check User Account Satatus, returns true if found one
   public function CheckActiveUser($username){
@@ -195,10 +204,10 @@ class Users{
       if ($chkActive == false) {
         Session::set('msg', 'Your account is inactive!');
         return;
-      }elseif(is_null($logResult)){
+      }elseif($logResult == false){
         Session::set('msg', 'Email or Password did not Matched');
         return;
-      }elseif($logResult){
+      }elseif($logResult !== false){
         Session::set('logged', TRUE);
         Session::set('id', $logResult->id);
         Session::set('super_user', $logResult->super_user);
@@ -212,6 +221,9 @@ class Users{
         Session::set('position', $logResult->position);
         Session::set('username', $logResult->username);
         header("Location: index.php");
+      }else{
+        Session::set('msg', 'Can\'t login!');
+        return;
       }
     }
   }
@@ -353,6 +365,5 @@ class Users{
     $stmt->execute();
     return $stmt->fetchAll(PDO::FETCH_OBJ);
   }
-
 
 }
